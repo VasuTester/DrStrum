@@ -14,14 +14,14 @@ pipeline {
 
         stage('Install dependencies') {
             steps {
-                sh 'npm ci'
-                sh 'npx playwright install'
+                bat 'npm ci'
+                bat 'npx playwright install'
             }
         }
 
         stage('Run tests') {
             steps {
-                sh 'npx playwright test --reporter=junit,html'
+                bat 'npx playwright test --reporter=junit,html'
             }
         }
 
