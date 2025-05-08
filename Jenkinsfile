@@ -66,7 +66,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        bat 'npx playwright test --reporter=junit,html,allure'
+                        bat 'npx playwright test --reporter=junit,html,allure-playwright'
                     } catch (Exception e) {
                         echo "Tests failed: ${e.getMessage()}"
                         currentBuild.result = 'FAILURE'
@@ -79,9 +79,10 @@ pipeline {
         stage('Generate Allure Report') {
             steps {
                 script {
-                    // Clean up any existing allure-results to avoid stale data
+                    // Clean up existing allure-results and allure-report
                     bat 'if exist allure-results rmdir /s /q allure-results'
                     bat 'if exist allure-report rmdir /s /q allure-report'
+                    // Generate Allure report, exit 0 if no results to avoid failure
                     bat 'npx allure generate allure-results --clean -o allure-report || exit 0'
                 }
             }
