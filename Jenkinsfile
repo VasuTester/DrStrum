@@ -66,7 +66,7 @@ pipeline {
                 // Ensure test-results directory exists
                 bat 'mkdir -p test-results'
                 // Run tests and specify the output format (JUnit)
-                bat 'npx playwright test --reporter=junit --output=test-results'
+                bat 'npx playwright test --reporter=junit --output=test-results --debug'
             }
         }
 
@@ -86,3 +86,4 @@ pipeline {
         }
     }
 }
+
