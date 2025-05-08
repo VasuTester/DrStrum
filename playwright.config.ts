@@ -96,12 +96,8 @@ export default defineConfig({
   // Run tests with only 1 worker in CI to avoid concurrency issues
   workers: process.env.CI ? 1 : undefined,
 
-  // Reporters to use
-  reporter: [
-    ['junit', { outputFile: 'test-results/results.xml' }],
-    ['html', { outputDir: 'playwright-report', open: 'never' }],
-    ['allure-playwright', { outputFolder: 'allure-results' }],
-  ],
+  // Reporter to use
+  reporter: [['html', { outputDir: 'playwright-report', open: 'never' }]],
 
   // Global options for all tests
   use: {
