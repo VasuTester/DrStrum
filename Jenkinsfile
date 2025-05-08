@@ -23,16 +23,16 @@ pipeline {
             steps {
                 // Ensure test-results directory exists
                 bat 'mkdir test-results'
-                // Run tests using the config file which already includes junit + html reporters
-                bat 'npx playwright test'
+                // Run tests; continue even if they fail
+                catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                    bat 'npx playwright test'
+                }
             }
         }
 
         stage('Archive results') {
             steps {
-                // This path matches your outputFile: 'test-results/results.xml'
                 junit 'test-results/results.xml'
-                // Archive HTML report directory
                 archiveArtifacts artifacts: 'playwright-report/**', allowEmptyArchive: true
             }
         }
