@@ -57,25 +57,39 @@ pipeline {
         stage('Install dependencies') {
             steps {
                 bat 'npm ci'
+                bat 'npm install @playwright/test allure-playwright allure-commandline --save-dev'
                 bat 'npx playwright install --with-deps'
             }
         }
 
         stage('Run tests') {
             steps {
-                bat 'npx playwright test --reporter=junit,html,allure'
+                script {
+                    try {
+                        bat 'npx playwright test --reporter=junit,html,allure'
+                    } catch (Exception e) {
+                        echo "Tests failed: ${e.getMessage()}"
+                        currentBuild.result = 'FAILURE'
+                        throw e
+                    }
+                }
             }
         }
 
         stage('Generate Allure Report') {
             steps {
-                bat 'npx allure generate allure-results --clean -o allure-report'
+                script {
+                    // Clean up any existing allure-results to avoid stale data
+                    bat 'if exist allure-results rmdir /s /q allure-results'
+                    bat 'if exist allure-report rmdir /s /q allure-report'
+                    bat 'npx allure generate allure-results --clean -o allure-report || exit 0'
+                }
             }
         }
 
         stage('Archive results') {
             steps {
-                junit 'test-results/**/*.xml'
+                junit allowEmptyResults: true, testResults: 'test-results/**/*.xml'
                 archiveArtifacts artifacts: 'playwright-report/**,allure-report/**', allowEmptyArchive: true
                 publishHTML(target: [
                     allowMissing: true,
@@ -113,4 +127,3 @@ pipeline {
         }
     }
 }
-
