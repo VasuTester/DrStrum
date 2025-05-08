@@ -99,19 +99,23 @@ export default defineConfig({
   // Reporters to use
   reporter: [
     ['junit', { outputFile: 'test-results/results.xml' }],
-    ['html', { open: 'never' }],
+    ['html', { outputDir: 'playwright-report', open: 'never' }],
+    ['allure-playwright', { outputFolder: 'allure-results' }],
   ],
 
   // Global options for all tests
   use: {
     // Collect trace only on first retry
     trace: 'on-first-retry',
-    
+
     // Capture screenshots on failure
     screenshot: 'only-on-failure',
 
     // Retain video only when tests fail
-    video: 'on',
+    video: 'retain-on-failure',
+
+    // Set a reasonable timeout for tests
+    actionTimeout: 30000, // 30 seconds
   },
 
   // Only run Chromium to prevent multiple runs across different browsers/devices
