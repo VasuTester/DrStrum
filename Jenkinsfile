@@ -21,18 +21,13 @@ pipeline {
 
         stage('Run tests') {
             steps {
-                // Ensure test-results directory exists
-                bat 'mkdir test-results'
-                // Run tests; continue even if they fail
-                catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-                    bat 'npx playwright test'
-                }
+                bat 'npx playwright test --reporter=junit,html'
             }
         }
 
         stage('Archive results') {
             steps {
-                junit 'test-results/results.xml'
+                junit 'test-results/**/*.xml'
                 archiveArtifacts artifacts: 'playwright-report/**', allowEmptyArchive: true
             }
         }
