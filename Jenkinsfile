@@ -78,14 +78,6 @@ pipeline {
         stage('Archive results') {
             steps {
                 archiveArtifacts artifacts: 'playwright-report/**', allowEmptyArchive: true
-                publishHTML(target: [
-                    allowMissing: true,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'playwright-report',
-                    reportFiles: 'index.html',
-                    reportName: 'Playwright HTML Report'
-                ])
             }
         }
     }
@@ -102,7 +94,7 @@ pipeline {
             echo 'Tests passed successfully!'
         }
         failure {
-            echo 'Tests failed. Check the reports for details.'
+            echo 'Tests failed. Check the archived reports for details.'
         }
     }
 }
