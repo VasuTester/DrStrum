@@ -2,13 +2,13 @@ pipeline {
     agent any
 
     tools {
-        nodejs "NodeJS 18"  // Make sure you've configured this version in Jenkins global tools
+        nodejs "NodeJS 18"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/VasuTester/DrStrum.git'
+                git branch: 'main', url: 'https://github.com/VasuTester/DrStrum.git'
             }
         }
 
@@ -21,13 +21,13 @@ pipeline {
 
         stage('Run tests') {
             steps {
-                sh 'npx playwright test'
+                sh 'npx playwright test --reporter=junit,html'
             }
         }
 
         stage('Archive results') {
             steps {
-                junit 'test-results/**/*.xml' // If using junit reporter
+                junit 'test-results/**/*.xml'
                 archiveArtifacts artifacts: 'playwright-report/**', allowEmptyArchive: true
             }
         }
